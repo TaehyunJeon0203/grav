@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .card {
+    @apply relative p-4 overflow-hidden transition-transform duration-500 ease-in-out;
+    background: rgba(255, 255, 255, 0.2); /* 반투명한 유리 느낌 배경 */
+    backdrop-filter: blur(10px); /* 유리 효과를 위한 블러 필터 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25); /* 기본 그림자 */
+    transition: transform 0.5s ease, box-shadow 0.5s ease; /* 그림자에 대한 애니메이션 추가 */
+    transform-origin: bottom center;
+  }
+
+  .card::before {
+    content: "";
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 150%;
+    height: 70%;
+    background: rgba(255, 255, 255, 0.1);
+    transition: transform 0.5s ease, background 0.5s ease, opacity 0.5s ease;
+    transform: scale(0.8) translateY(0) rotate(30deg); /* 기본 상태에서는 크기 비율과 위치 유지 */
+    filter: blur(4px); /* 더 흐릿한 블러 효과 적용 */
+  }
+
+  .card:hover::before {
+    transform: scale(1.5) translateY(13px) rotate(30deg); /* 호버 시 크기 확대 및 위치 이동 */
+    background: rgba(255, 255, 255, 0.25);
+  }
+
+  .card:hover {
+    transform: rotateX(10deg) translateY(-10px); /* 카드가 위로 들리는 효과 */
+    box-shadow: 0 20px 30px rgba(0, 0, 0, 0.5); /* 호버 시 그림자 확대 */
+  }
+}
+
+@layer components {
+  .launch-button {
+    @apply w-14 h-14 text-3xl shadow-2xl rounded hover:text-neutral-50 absolute bottom-2 left-2 z-50;
+    background: radial-gradient(circle, rgb(74 222 128), rgb(21 128 61));
+    @apply flex items-center justify-center; /* 텍스트를 중앙에 배치 */
+
+    /* 텍스트 확대 효과 */
+    & > span {
+      @apply transition-transform duration-300 ease-in-out;
+    }
+
+    /* 호버 시 텍스트 확대 */
+    &:hover > span {
+      @apply scale-110;
+    }
+  }
+}

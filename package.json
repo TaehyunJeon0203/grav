@@ -1,0 +1,57 @@
+{
+  "name": "grav",
+  "version": "1.0.0",
+  "main": "dist/main.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:css": "npx tailwindcss -i ./src/styles/tailwind.css -o ./dist/styles.css",
+    "watch:css": "npx tailwindcss -i ./src/styles/tailwind.css -o ./dist/styles.css --watch",
+    "start": "electron .",
+    "build": "npm run build:css && tsc && cp src/index.html dist/",
+    "dev": "npx concurrently \"npm run watch:css\" \"nodemon --watch src --ext ts,html --exec 'npm run build && electron dist/main.js'\""
+  },
+  "build": {
+    "appId": "https://github.com/TaehyunJeon0203/grav",
+    "productName": "Grav",
+    "files": [
+      "dist/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "buildResources": "assets",
+      "output": "dist"
+    },
+    "mac": {
+      "icon": "assets/logo.icns",
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "entitlements": "./entitlements.plist",
+      "entitlementsInherit": "./entitlements.plist",
+      "extendInfo": {
+        "NSDocumentsFolderUsageDescription": "We need access to your Documents folder for saving timer data.",
+        "NSApplicationSupportsShakeToEdit": true
+      }
+    }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/electron": "^1.6.10",
+    "@types/node": "^22.0.0",
+    "autoprefixer": "^10.4.19",
+    "electron": "^31.3.1",
+    "electron-builder": "^24.13.3",
+    "nodemon": "^3.1.4",
+    "postcss": "^8.4.40",
+    "postcss-loader": "^8.1.1",
+    "tailwindcss": "^3.4.7",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.4"
+  }
+}

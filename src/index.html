@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Grav</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body
+    class="bg-gray-700 text-neutral-300 font-sans tracking-widest text-center"
+  >
+    <div class="bg-gray-800 w-full h-32 content-center">
+      <div>플레이 시간</div>
+      <div id="timerDisplay"></div>
+    </div>
+    <div class="pt-5">
+      <div>
+        <button
+          id="addProjectOpen"
+          class="text-neutral-500 hover:text-neutral-300 mb-5"
+        >
+          ⊕ 프로젝트 추가
+        </button>
+      </div>
+      <div
+        id="addProjectArea"
+        class="hidden absolute left-1/2 -translate-x-2/4 bg-gray-600 rounded shadow-lg z-50 p-2"
+      >
+        <input id="projectName" type="text" placeholder="Project Name" />
+        <input id="projectPath" type="text" placeholder="Project Path" />
+        <button id="addProject" class="block m-auto">추가</button>
+      </div>
+      <div
+        id="contextMenu"
+        class="hidden absolute bg-gray-600 rounded shadow-lg z-50 p-2"
+      >
+        <ul class="list-none p-0 m-0">
+          <li
+            id="deleteProject"
+            class="px-3 py-2 cursor-pointer hover:bg-gray-100 hover:text-gray-800"
+          >
+            프로젝트 삭제
+          </li>
+        </ul>
+      </div>
+
+      <div id="projects" class="flex gap-8 mx-8"></div>
+    </div>
+    <script src="renderer.js"></script>
+  </body>
+</html>
