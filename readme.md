@@ -4,8 +4,6 @@
 ![Typescript](https://img.shields.io/badge/Typescript-3178c6?style=flat-square&logo=typescript&logoColor=white)
 ![Tailwind](https://img.shields.io/badge/Tailwind-06B6D4?style=flat-square&logo=sass&logoColor=white)
 
----
-
 ## 개요
 
 > 매번 에디터를 킨 후 복잡한 경로에 찾아가서 프로젝트를 열었나요?
