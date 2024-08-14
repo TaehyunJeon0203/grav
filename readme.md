@@ -1,5 +1,4 @@
 ![header](https://capsule-render.vercel.app/api?type=rect&color=gradient&height=100&section=header&text=Grav&fontSize=45&fontAlign=80&fontAlignY=52)
-![Node.js](https://img.shields.io/badge/Node-339933?style=flat-square&logo=Node.js&logoColor=white)
 ![ELECTRON](https://img.shields.io/badge/Electron-47848F?style=flat-square&logo=Electron&logoColor=white)
 ![Typescript](https://img.shields.io/badge/Typescript-3178c6?style=flat-square&logo=typescript&logoColor=white)
 ![Tailwind](https://img.shields.io/badge/Tailwind-06B6D4?style=flat-square&logo=sass&logoColor=white)
