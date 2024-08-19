@@ -4,6 +4,8 @@ const { ipcRenderer } = require("electron");
 interface Project {
   name: string;
   path: string;
+  totalTime: number;
+  dailyTimes: { [data: string]: number };
 }
 
 // 프로젝트를 로컬스토리지에 저장
@@ -14,7 +16,13 @@ function saveProjects(projects: Project[]): void {
 // 프로젝트를 로컬스토리지에서 로드
 function loadProjects(): Project[] {
   const savedProjects = localStorage.getItem("projects");
-  return savedProjects ? JSON.parse(savedProjects) : [];
+  const projects = savedProjects ? JSON.parse(savedProjects) : [];
+
+  return projects.map((project: Project) => ({
+    ...project,
+    totalTime: project.totalTime || 0,
+    dailyTimes: project.dailyTimes || {},
+  }));
 }
 
 // 프로젝트 렌더링
@@ -46,6 +54,13 @@ function renderProjects(projects: Project[]): void {
     projectName.classList.add("mb-2");
     projectName.textContent = `${project.name}`;
 
+    const totalTime = formatTimeInHours(project.totalTime);
+    const recentTime = formatTimeInHours(getRecentTwoWeeksPlayTime(project));
+
+    const timeInfo = document.createElement("span");
+    timeInfo.innerHTML = `플레이 시간<br>지난 2주 동안: ${recentTime}<br>합계: ${totalTime}`;
+    timeInfo.classList.add("text-neutral-700", "text-sm", "tracking-tight");
+
     const launchButton = document.createElement("button");
     launchButton.classList.add("launch-button");
     const iconSpan = document.createElement("span");
@@ -58,6 +73,7 @@ function renderProjects(projects: Project[]): void {
 
     projectElement.appendChild(projectName);
     projectElement.appendChild(launchButton);
+    projectElement.appendChild(timeInfo);
     projectsContainer.appendChild(projectElement);
   });
 }
@@ -89,7 +105,14 @@ document.getElementById("addProject")?.addEventListener("click", () => {
     const projectPath = projectPathInput.value.trim();
 
     if (projectName && projectPath) {
-      projects.push({ name: projectName, path: projectPath });
+      const newProject: Project = {
+        name: projectName,
+        path: projectPath,
+        totalTime: 0,
+        dailyTimes: {},
+      };
+
+      projects.push(newProject);
       saveProjects(projects);
       renderProjects(projects);
 
@@ -161,9 +184,31 @@ document.addEventListener("click", (event) => {
 });
 
 // 타이머
+function getRecentTwoWeeksPlayTime(project: Project): number {
+  const today = new Date();
+  let totalTime = 0;
+
+  for (let i = 0; i < 14; i++) {
+    const date = new Date(today);
+    date.setDate(today.getDate() - i);
+    const dateString = date.toISOString().split("T")[0];
+    totalTime += project.dailyTimes[dateString] || 0;
+  }
+
+  return totalTime;
+}
+
 function formatTimeInHours(seconds: number): string {
-  const hours = seconds / 3600;
-  return `${hours.toFixed(1)}시간`;
+  const minutes = seconds / 60;
+  const hours = minutes / 60;
+
+  if (seconds == 0) {
+    return `0분`;
+  } else if (hours >= 1) {
+    return `${hours.toFixed(1)}시간`;
+  } else {
+    return `${minutes.toFixed(1)}분`;
+  }
 }
 const timerDisplay = document.getElementById("timerDisplay");
 
