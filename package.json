@@ -8,7 +8,7 @@
     "build:css": "npx tailwindcss -i ./src/styles/tailwind.css -o ./dist/styles.css",
     "watch:css": "npx tailwindcss -i ./src/styles/tailwind.css -o ./dist/styles.css --watch",
     "start": "electron .",
-    "build": "npm run build:css && tsc && cp src/index.html dist/",
+    "build": "npm run build:css && tsc && cp public/index.html dist/",
     "dev": "npx concurrently \"npm run watch:css\" \"nodemon --watch src --ext ts,html --exec 'npm run build && electron dist/main.js'\""
   },
   "build": {
