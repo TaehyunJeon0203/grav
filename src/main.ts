@@ -232,12 +232,26 @@ function formatDate(date: Date): string {
 }
 
 // 프로젝트별 타이머 시작
-function startProjectTimer(projectPath: string) {
+function startProjectTimer(projectPath: string, initialCheck = false) {
   if (!projectTimerStates[projectPath]) {
     projectTimerStates[projectPath] = {
       seconds: 0,
       dailyTimes: {},
     };
+  }
+
+  if (initialCheck) {
+    // 초기 상태를 클라이언트로 전송
+    if (mainWindow) {
+      mainWindow.webContents.send("update-project-timer", {
+        projectPath,
+        seconds: projectTimerStates[projectPath].seconds,
+        dailyTimes: projectTimerStates[projectPath].dailyTimes,
+        recentTwoWeeksPlayTime: getRecentTwoWeeksPlayTime(
+          projectTimerStates[projectPath].dailyTimes
+        ),
+      });
+    }
   }
 
   const timer = setInterval(async () => {

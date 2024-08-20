@@ -60,7 +60,12 @@ function renderProjects(projects: Project[]): void {
 
     const timeInfo = document.createElement("span");
     timeInfo.innerHTML = `플레이 시간<br>지난 2주 동안: ${twoWeeksTimes}<br>합계: ${totalTime}`;
-    timeInfo.classList.add("text-neutral-700", "text-sm", "tracking-tight");
+    timeInfo.classList.add(
+      "text-neutral-700",
+      "text-sm",
+      "tracking-tight",
+      "text-left"
+    );
 
     const launchButton = document.createElement("button");
     launchButton.classList.add("launch-button");
@@ -210,7 +215,7 @@ function formatTimeInHours(seconds: number): string {
   } else if (hours >= 1) {
     return `${hours.toFixed(1)}시간`;
   } else {
-    return `${minutes.toFixed(1)}분`;
+    return `${minutes.toFixed(0)}분`;
   }
 }
 const timerDisplay = document.getElementById("timerDisplay");
@@ -218,8 +223,7 @@ const timerDisplay = document.getElementById("timerDisplay");
 // 전체 타이머 업데이트 리스너
 ipcRenderer.on("update-totalTimer", (event, seconds) => {
   if (timerDisplay) {
-    timerDisplay.textContent = seconds;
-    // formatTimeInHours(seconds);
+    timerDisplay.textContent = formatTimeInHours(seconds);
   }
 });
 
