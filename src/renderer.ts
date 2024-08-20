@@ -6,6 +6,7 @@ interface Project {
   path: string;
   totalTime: number;
   dailyTimes: { [data: string]: number };
+  twoWeeksTimes: number;
 }
 
 // 프로젝트를 로컬스토리지에 저장
@@ -55,10 +56,10 @@ function renderProjects(projects: Project[]): void {
     projectName.textContent = `${project.name}`;
 
     const totalTime = formatTimeInHours(project.totalTime);
-    const recentTime = formatTimeInHours(getRecentTwoWeeksPlayTime(project));
+    const twoWeeksTimes = formatTimeInHours(project.twoWeeksTimes);
 
     const timeInfo = document.createElement("span");
-    timeInfo.innerHTML = `플레이 시간<br>지난 2주 동안: ${recentTime}<br>합계: ${totalTime}`;
+    timeInfo.innerHTML = `플레이 시간<br>지난 2주 동안: ${twoWeeksTimes}<br>합계: ${totalTime}`;
     timeInfo.classList.add("text-neutral-700", "text-sm", "tracking-tight");
 
     const launchButton = document.createElement("button");
@@ -88,7 +89,6 @@ const contextMenu = document.getElementById("contextMenu") as HTMLDivElement;
 
 // 추가 프로젝트 버튼 클릭 시
 document.getElementById("addProjectOpen")?.addEventListener("click", () => {
-  console.log("dodod");
   addProjectArea.classList.remove("hidden");
 });
 
@@ -110,6 +110,7 @@ document.getElementById("addProject")?.addEventListener("click", () => {
         path: projectPath,
         totalTime: 0,
         dailyTimes: {},
+        twoWeeksTimes: 0,
       };
 
       projects.push(newProject);
@@ -184,6 +185,8 @@ document.addEventListener("click", (event) => {
 });
 
 // 타이머
+
+// 2주간 작업시간 계산 함수
 function getRecentTwoWeeksPlayTime(project: Project): number {
   const today = new Date();
   let totalTime = 0;
@@ -212,8 +215,25 @@ function formatTimeInHours(seconds: number): string {
 }
 const timerDisplay = document.getElementById("timerDisplay");
 
-ipcRenderer.on("update-timer", (event, seconds) => {
+// 전체 타이머 업데이트 리스너
+ipcRenderer.on("update-totalTimer", (event, seconds) => {
   if (timerDisplay) {
-    timerDisplay.textContent = formatTimeInHours(seconds);
+    timerDisplay.textContent = seconds;
+    // formatTimeInHours(seconds);
   }
 });
+
+// 프로젝트별 타이머 업데이트 리스너
+ipcRenderer.on(
+  "update-project-timer",
+  (event, { projectPath, seconds, dailyTimes, twoWeeksTimes }) => {
+    const project = projects.find((proj) => proj.path === projectPath);
+    if (project) {
+      project.totalTime = seconds;
+      project.dailyTimes = dailyTimes;
+      project.twoWeeksTimes = twoWeeksTimes;
+      saveProjects(projects);
+      renderProjects(projects);
+    }
+  }
+);
