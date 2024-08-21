@@ -70,6 +70,7 @@ function createWindow(): void {
   });
 
   startTotalTimer(true);
+  removeOldEntries();
 }
 
 // VSCode 실행 여부 확인
@@ -168,6 +169,32 @@ function loadProjectTimerStates(): ProjectTimerState {
 function saveProjectTimerState() {
   fs.writeFileSync(PROJECT_TIMER_FILE_PATH, JSON.stringify(projectTimerStates));
 }
+
+// 2주 지난 프로젝트별 작업 시간 데이터 삭제
+function removeOldEntries() {
+  // projectTimerStates 로드
+  const projectTimerStates = loadProjectTimerStates();
+  const currentDate = new Date();
+
+  for (const projectPath in projectTimerStates) {
+    const dailyTimes = projectTimerStates[projectPath].dailyTimes;
+
+    for (const date in dailyTimes) {
+      const recordDate = new Date(date);
+      const timeDifference = currentDate.getTime() - recordDate.getTime();
+      const dayDifference = timeDifference / (1000 * 3600 * 24);
+
+      // 14일(2주) 이상 지난 데이터 삭제
+      if (dayDifference > 14) {
+        delete dailyTimes[date];
+      }
+    }
+  }
+
+  // 필터링된 데이터를 다시 저장
+  saveProjectTimerState();
+}
+removeOldEntries();
 
 // 2주간 작업시간 계산 함수
 function getRecentTwoWeeksPlayTime(dailyTimes: {
@@ -303,6 +330,16 @@ function stopProjectTimer(projectPath: string) {
   }
 }
 
+function stopAllProjectTimers() {
+  // 모든 프로젝트별 타이머를 정지
+  for (const projectPath in projectTimers) {
+    clearInterval(projectTimers[projectPath]);
+    delete projectTimers[projectPath];
+  }
+
+  // 프로젝트별 타이머 상태 저장 (필요시)
+  saveProjectTimerState();
+}
 // IPC 이벤트 핸들러
 ipcMain.on("launch-project", (event, projectPath: string) => {
   console.log(`Opening project at: ${projectPath}`);
@@ -310,7 +347,7 @@ ipcMain.on("launch-project", (event, projectPath: string) => {
   const child = spawn(getCodePath(), [projectPath, "--reuse-window"], {
     shell: true,
   });
-
+  stopAllProjectTimers();
   startProjectTimer(projectPath);
 
   child.stdout.on("data", (data) => {
