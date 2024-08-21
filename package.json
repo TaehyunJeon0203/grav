@@ -25,7 +25,7 @@
       "output": "dist"
     },
     "mac": {
-      "icon": "assets/logo.icns",
+      "icon": "public/assets/logo.icns",
       "target": [
         "dmg",
         "zip"

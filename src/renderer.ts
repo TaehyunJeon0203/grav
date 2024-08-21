@@ -40,7 +40,7 @@ function renderProjects(projects: Project[]): void {
       "projectElement",
       "flex",
       "flex-col",
-      "w-36",
+      "w-37",
       "h-56",
       "bg-gradient-to-b",
       "from-gray-400",
@@ -59,9 +59,9 @@ function renderProjects(projects: Project[]): void {
     const twoWeeksTimes = formatTimeInHours(project.twoWeeksTimes);
 
     const timeInfo = document.createElement("span");
-    timeInfo.innerHTML = `플레이 시간<br>지난 2주 동안: ${twoWeeksTimes}<br>합계: ${totalTime}`;
+    timeInfo.innerHTML = `<span class="text-neutral-300">작업 시간</span><br>지난 2주 동안: ${twoWeeksTimes}<br>합계: ${totalTime}`;
     timeInfo.classList.add(
-      "text-neutral-700",
+      "text-neutral-400",
       "text-sm",
       "tracking-tight",
       "text-left"
