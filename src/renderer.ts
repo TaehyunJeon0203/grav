@@ -26,6 +26,23 @@ function loadProjects(): Project[] {
   }));
 }
 
+// 기존 프로젝트의 DOM 업데이트
+function updateProjectElement(project: Project): void {
+  const projectElement = document.querySelector(
+    `.projectElement[data-path="${project.path}"]`
+  );
+
+  if (projectElement) {
+    const totalTime = formatTimeInHours(project.totalTime);
+    const twoWeeksTimes = formatTimeInHours(project.twoWeeksTimes);
+
+    const timeInfo = projectElement.querySelector("span.text-neutral-400");
+    if (timeInfo) {
+      timeInfo.innerHTML = `<span class="text-neutral-300">작업 시간</span><br>지난 2주간: ${twoWeeksTimes}<br>합계: ${totalTime}`;
+    }
+  }
+}
+
 // 프로젝트 렌더링
 function renderProjects(projects: Project[]): void {
   const projectsContainer = document.getElementById("projects");
@@ -240,7 +257,7 @@ ipcRenderer.on(
       project.dailyTimes = dailyTimes;
       project.twoWeeksTimes = twoWeeksTimes;
       saveProjects(projects);
-      renderProjects(projects);
+      updateProjectElement(project);
     }
   }
 );
