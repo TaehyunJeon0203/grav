@@ -14,12 +14,11 @@ Grav에 프로젝트를 단 한 번 추가한다면 언제든 손쉽게 열 수 
 
 ## Preview
 
-![preview](https://github.com/user-attachments/assets/cec48840-8159-44d1-b093-664c1cf8c1aa)
+![preview](https://github.com/user-attachments/assets/8a0eeb4b-41ed-4a8f-bf34-9fe777aeaf1e)
+프로젝트 이름과 로컬 경로로 간단하게 프로젝트를 추가할 수 있어요.
+![preview](https://github.com/user-attachments/assets/3e0304c7-0040-4770-811b-6d1122744d4c)
 추가한 프로젝트는 이렇게 나타나요.
-![preview](https://github.com/user-attachments/assets/e7a09717-4afb-4c90-90c1-3a4171d09243)
 프로젝트 하단 시작 아이콘을 누르면 VSCode 에서 해당 프로젝트가 열려요
-![preview](https://github.com/user-attachments/assets/4d26a009-cc99-45c3-a726-6c364adbaee9)
-간단하게 프로젝트를 추가할 수 있어요.
 
 ---
 
