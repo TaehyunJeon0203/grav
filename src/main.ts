@@ -22,6 +22,7 @@ app.on("window-all-closed", () => {
 app.on("activate", () => {
   if (mainWindow === null) {
     createWindow();
+    3;
   }
 });
 
@@ -73,12 +74,12 @@ function createWindow(): void {
   removeOldEntries();
 }
 
-// VSCode 실행 여부 확인
-function isVSCodeRunning(): Promise<boolean> {
+// Cursor 실행 여부 확인
+function isCursorRunning(): Promise<boolean> {
   return new Promise((resolve) => {
-    exec("ps aux | grep 'Visual Studio Code' | grep -v grep", (err, stdout) => {
+    exec("ps aux | grep 'Cursor' | grep -v grep", (err, stdout) => {
       if (err) {
-        console.error("Error checking VSCode process:", err);
+        console.error("Error checking Cursor process:", err);
         resolve(false);
       } else {
         resolve(stdout.length > 0);
@@ -87,26 +88,27 @@ function isVSCodeRunning(): Promise<boolean> {
   });
 }
 
-// VSCode로 해당 프로젝트가 열려있는지 확인하는 함수
-function isProjectOpenInVSCode(projectPath: string): Promise<boolean> {
+// Cursor로 해당 프로젝트가 열려있는지 확인하는 함수
+function isProjectOpenInCursor(projectPath: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
-    // lsof 명령어 실행
-    exec(`lsof | grep ${projectPath} | grep Code`, (error, stdout, stderr) => {
-      if (error) {
-        console.error(`Error executing lsof: ${error.message}`);
-        reject(error);
-        return;
-      }
-      if (stderr) {
-        console.error(`Error output from lsof: ${stderr}`);
-        reject(new Error(stderr));
-        return;
-      }
+    exec(
+      `lsof | grep ${projectPath} | grep Cursor`,
+      (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Error executing lsof: ${error.message}`);
+          reject(error);
+          return;
+        }
+        if (stderr) {
+          console.error(`Error output from lsof: ${stderr}`);
+          reject(new Error(stderr));
+          return;
+        }
 
-      // 결과가 있는지 확인
-      const isOpenInVSCode = stdout.trim().length > 0;
-      resolve(isOpenInVSCode);
-    });
+        const isOpenInCursor = stdout.trim().length > 0;
+        resolve(isOpenInCursor);
+      }
+    );
   });
 }
 
@@ -221,7 +223,7 @@ let projectTimers: { [projectPath: string]: NodeJS.Timeout } = {};
 // 전체 타이머 시작
 function startTotalTimer(initialCheck = false) {
   if (initialCheck) {
-    isVSCodeRunning().then((vscodeRunning) => {
+    isCursorRunning().then((vscodeRunning) => {
       if (mainWindow) {
         mainWindow.webContents.send(
           "update-totalTimer",
@@ -232,7 +234,7 @@ function startTotalTimer(initialCheck = false) {
   }
 
   totalTimerInterval = setInterval(async () => {
-    const vscodeRunning = await isVSCodeRunning();
+    const vscodeRunning = await isCursorRunning();
     if (vscodeRunning) {
       totalTimerState.seconds++;
       saveTotalTimerState(totalTimerState);
@@ -282,7 +284,7 @@ function startProjectTimer(projectPath: string, initialCheck = false) {
   }
 
   const timer = setInterval(async () => {
-    const isOpen = await isProjectOpenInVSCode(projectPath);
+    const isOpen = await isProjectOpenInCursor(projectPath);
 
     if (isOpen) {
       projectTimerStates[projectPath].seconds += 1;
@@ -344,7 +346,7 @@ function stopAllProjectTimers() {
 ipcMain.on("launch-project", (event, projectPath: string) => {
   console.log(`Opening project at: ${projectPath}`);
 
-  const child = spawn(getCodePath(), [projectPath, "--reuse-window"], {
+  const child = spawn(getCursorPath(), [projectPath, "--reuse-window"], {
     shell: true,
   });
   stopAllProjectTimers();
@@ -364,8 +366,8 @@ ipcMain.on("launch-project", (event, projectPath: string) => {
 
   child.on("close", (code) => {
     console.log(`Project at ${projectPath} closed with code ${code}`);
-    // VSCode가 열려 있는지 추가 확인
-    isProjectOpenInVSCode(projectPath).then((isOpen) => {
+    // Cursor가 열려 있는지 추가 확인
+    isProjectOpenInCursor(projectPath).then((isOpen) => {
       if (!isOpen) {
         stopProjectTimer(projectPath);
       }
@@ -373,24 +375,24 @@ ipcMain.on("launch-project", (event, projectPath: string) => {
   });
 });
 
-// VSCode 경로 찾기
-function getCodePath() {
+// Cursor 경로 찾기
+function getCursorPath() {
   try {
-    const codePath = execSync("which code").toString().trim();
-    if (fs.existsSync(codePath)) {
-      return codePath;
+    const cursorPath = execSync("which cursor").toString().trim();
+    if (fs.existsSync(cursorPath)) {
+      return cursorPath;
     } else {
-      throw new Error("code command not found");
+      throw new Error("cursor command not found");
     }
   } catch (error) {
     console.error(
-      "Could not find code command path, falling back to default:",
+      "Could not find cursor command path, falling back to default:",
       error
     );
     const fallbackPaths = [
-      "/usr/local/bin/code",
-      "/opt/homebrew/bin/code", // M1 Mac의 기본 경로
-      "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code",
+      "/usr/local/bin/cursor",
+      "/opt/homebrew/bin/cursor",
+      "/Applications/Cursor.app/Contents/MacOS/Cursor",
     ];
 
     for (const fallbackPath of fallbackPaths) {
@@ -400,7 +402,7 @@ function getCodePath() {
     }
 
     throw new Error(
-      "Could not find VSCode executable. Please ensure VSCode is installed."
+      "Could not find Cursor executable. Please ensure Cursor is installed."
     );
   }
 }
