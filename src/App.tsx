@@ -1,13 +1,8 @@
-import { ProjectList } from "./components/Project/ProjectList";
-import { Timer } from "./components/Timer/Timer";
-import { MainLayout } from "./components/Layout/MainLayout";
-
 function App() {
   return (
-    <MainLayout>
-      <Timer />
-      <ProjectList />
-    </MainLayout>
+    <div className="min-h-screen bg-neutral-900 text-white p-8">
+      <h1 className="text-2xl font-bold mb-8">Grav</h1>
+    </div>
   );
 }
 
