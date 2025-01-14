@@ -7,6 +7,14 @@ export const ProjectList = () => {
   const { projects } = useProjectStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // 즐겨찾기 순으로 정렬
+  const sortedProjects = [...projects].sort((a, b) => {
+    if (a.isFavorite === b.isFavorite) {
+      return 0; // 즐겨찾기 상태가 같으면 순서 유지
+    }
+    return a.isFavorite ? -1 : 1; // 즐겨찾기된 항목이 위로
+  });
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
@@ -20,7 +28,7 @@ export const ProjectList = () => {
       </div>
 
       <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-        {projects.map((project) => (
+        {sortedProjects.map((project) => (
           <ProjectCard key={project.id} project={project} />
         ))}
       </div>

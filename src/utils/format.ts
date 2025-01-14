@@ -1,3 +1,4 @@
 export const formatMinutes = (minutes: number): string => {
-  return `${minutes % 1 === 0 ? Math.floor(minutes) : minutes.toFixed(1)}분`;
+  const hours = minutes / 60;
+  return `${hours % 1 === 0 ? Math.floor(hours) : hours.toFixed(1)}시간`;
 };
