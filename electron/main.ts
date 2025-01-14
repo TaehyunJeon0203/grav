@@ -1,24 +1,27 @@
 import { app, BrowserWindow } from "electron";
-import path from "node:path";
+import path from "path";
 
-let win: BrowserWindow | null = null;
+let mainWindow: BrowserWindow | null = null;
 
-const createWindow = () => {
-  win = new BrowserWindow({
+function createWindow() {
+  mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
     webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
+      nodeIntegration: false,
+      contextIsolation: true,
+      preload: path.join(__dirname, "preload.js"),
+      webSecurity: false,
     },
   });
 
-  if (process.env.VITE_DEV_SERVER_URL) {
-    win.loadURL(process.env.VITE_DEV_SERVER_URL);
+  if (process.env.NODE_ENV === "development") {
+    mainWindow.loadURL("http://localhost:5173");
+    mainWindow.webContents.openDevTools();
   } else {
-    win.loadFile(path.join(__dirname, "../dist/index.html"));
+    mainWindow.loadFile(path.join(__dirname, "../dist/index.html"));
   }
-};
+}
 
 app.whenReady().then(createWindow);
 
