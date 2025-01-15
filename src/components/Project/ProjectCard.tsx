@@ -47,7 +47,7 @@ export const ProjectCard = ({ project }: ProjectCardProps) => {
                 합계: {formatMinutes(totalMinutes)}
               </p>
               <p className="text-blue-400">
-                지난 2주간: {formatMinutes(recentMinutes)}
+                지난 2주 동안: {formatMinutes(recentMinutes)}
               </p>
             </div>
           </div>

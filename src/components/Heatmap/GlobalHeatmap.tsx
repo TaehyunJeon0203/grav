@@ -89,54 +89,78 @@ export const GlobalHeatmap = () => {
           </div>
         ))}
       </div>
-      <div className="flex">
-        <div className="flex flex-col justify-between pr-2 text-xs text-neutral-400 h-[94px]">
-          <span className="opacity-0">.</span>
-          <span>월</span>
-          <span className="opacity-0">.</span>
-          <span>수</span>
-          <span className="opacity-0">.</span>
-          <span>금</span>
-          <span className="opacity-0">.</span>
-        </div>
-        <div className="flex gap-1">
-          {weeks.map((week, weekIndex) => (
-            <div key={weekIndex} className="flex flex-col gap-1">
-              {Array(7)
-                .fill(0)
-                .map((_, dayIndex) => {
-                  const date = week[dayIndex];
-                  const minutes = date ? dailyMinutes[date] : 0;
-                  const formattedDate = date
-                    ? new Date(date).toLocaleDateString("ko-KR", {
-                        month: "long",
-                        day: "numeric",
-                      })
-                    : "";
+      <div className="flex flex-col">
+        <div className="flex">
+          <div className="flex flex-col justify-between pr-2 text-xs text-neutral-400 h-[94px]">
+            <span className="opacity-0">.</span>
+            <span>월</span>
+            <span className="opacity-0">.</span>
+            <span>수</span>
+            <span className="opacity-0">.</span>
+            <span>금</span>
+            <span className="opacity-0">.</span>
+          </div>
+          <div className="flex gap-1">
+            {weeks.map((week, weekIndex) => (
+              <div key={weekIndex} className="flex flex-col gap-1">
+                {Array(7)
+                  .fill(0)
+                  .map((_, dayIndex) => {
+                    const date = week[dayIndex];
+                    const minutes = date ? dailyMinutes[date] : 0;
+                    const formattedDate = date
+                      ? new Date(date).toLocaleDateString("ko-KR", {
+                          month: "long",
+                          day: "numeric",
+                        })
+                      : "";
 
-                  return (
-                    <div
-                      key={dayIndex}
-                      className={`w-3 h-3 rounded-sm ${
-                        date ? getColorIntensity(minutes) : "bg-neutral-800"
-                      }`}
-                      onMouseMove={(e) => {
-                        if (date) {
-                          setTooltip({
-                            text: `${formattedDate} ${formatMinutes(
-                              minutes
-                            )} 작업`,
-                            x: e.clientX,
-                            y: e.clientY,
-                          });
-                        }
-                      }}
-                      onMouseLeave={() => setTooltip(null)}
-                    />
-                  );
-                })}
+                    return (
+                      <div
+                        key={dayIndex}
+                        className={`w-3 h-3 rounded-sm ${
+                          date ? getColorIntensity(minutes) : "bg-neutral-800"
+                        }`}
+                        onMouseMove={(e) => {
+                          if (date) {
+                            setTooltip({
+                              text: `${formattedDate} ${formatMinutes(
+                                minutes
+                              )} 작업`,
+                              x: e.clientX,
+                              y: e.clientY,
+                            });
+                          }
+                        }}
+                        onMouseLeave={() => setTooltip(null)}
+                      />
+                    );
+                  })}
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="flex justify-between items-center text-xs text-neutral-400 mt-2 ml-4 mr-4">
+          <span>
+            최근 1년 동안:{" "}
+            {formatMinutes(
+              Object.values(dailyMinutes).reduce(
+                (sum, minutes) => sum + minutes,
+                0
+              )
+            )}
+          </span>
+          <div className="flex items-center gap-2">
+            <span>Less</span>
+            <div className="flex gap-1">
+              <div className="w-3 h-3 rounded-sm bg-neutral-700" />
+              <div className="w-3 h-3 rounded-sm bg-emerald-900" />
+              <div className="w-3 h-3 rounded-sm bg-emerald-700" />
+              <div className="w-3 h-3 rounded-sm bg-emerald-500" />
+              <div className="w-3 h-3 rounded-sm bg-emerald-300" />
             </div>
-          ))}
+            <span>More</span>
+          </div>
         </div>
       </div>
       {tooltip && (
