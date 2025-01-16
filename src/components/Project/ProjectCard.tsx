@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Project } from "../../types/project";
 import { formatMinutes, getRecentTimeTotal } from "../../utils/dateTime";
 import { openInIde } from "../../utils/project";
@@ -10,6 +10,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { StarIcon as StarSolid } from "@heroicons/react/24/solid";
 import { useProjectStore } from "../../stores/projectStore";
+import { useSettingsStore } from "../../stores/settingsStore";
 
 interface ProjectCardProps {
   project: Project;
@@ -17,12 +18,41 @@ interface ProjectCardProps {
 
 export const ProjectCard = ({ project }: ProjectCardProps) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const { removeProject, updateProject } = useProjectStore();
+  const { removeProject, updateProject, updateProjectTime } = useProjectStore();
+  const { getSelectedIde } = useSettingsStore();
   const totalMinutes = project.totalTime / 60;
   const recentMinutes = getRecentTimeTotal(project.timeLogs || []);
 
+  useEffect(() => {
+    let timeUpdateCallback: any;
+
+    const startTracking = async () => {
+      if (!window.electron) return;
+
+      // IDE 상태 체크 시작
+      await window.electron.checkIdeStatus(project.id, project.path);
+
+      // 시간 업데이트 이벤트 리스너 등록
+      timeUpdateCallback = window.electron.onTimeUpdate((projectId: string) => {
+        if (projectId === project.id) {
+          updateProjectTime(project.id);
+        }
+      });
+    };
+
+    startTracking();
+
+    // 컴포넌트 언마운트 시 리스너 제거
+    return () => {
+      if (timeUpdateCallback && window.electron) {
+        window.electron.removeTimeUpdateListener(timeUpdateCallback);
+      }
+    };
+  }, [project.id]);
+
   const handleOpenClick = async () => {
-    await openInIde(project.path);
+    const selectedIde = getSelectedIde();
+    await openInIde(project.path, selectedIde.command.mac);
   };
 
   const handleDelete = () => {

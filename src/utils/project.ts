@@ -1,13 +1,4 @@
-import { useSettingsStore } from "../stores/settingsStore";
-
-export const openInIde = async (path: string) => {
-  const { getSelectedIde } = useSettingsStore.getState();
-  const selectedIde = getSelectedIde();
-
-  // 개발 환경에서는 mac 명령어 사용
-  const command = selectedIde.command.mac;
-
-  // 개발 환경에서는 console.log만 출력
+export const openInIde = async (path: string, command: string) => {
   if (!window.electron) {
     console.log("Opening project:", { path, command });
     return;

@@ -6,6 +6,7 @@ interface ProjectStore {
   addProject: (project: Project) => void;
   removeProject: (id: string) => void;
   updateProject: (id: string, updates: Partial<Project>) => void;
+  updateProjectTime: (id: string) => void;
   getProjectById: (id: string) => Project | undefined;
   getTotalTime: () => number;
 }
@@ -105,6 +106,39 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
       );
       localStorage.setItem("projects", JSON.stringify(projects));
       return { projects };
+    }),
+
+  updateProjectTime: (id: string) =>
+    set((state) => {
+      const project = state.projects.find((p) => p.id === id);
+      if (!project) return state;
+
+      const today = new Date().toISOString().split("T")[0];
+      const existingLog = project.timeLogs.find((log) => log.date === today);
+
+      if (existingLog) {
+        // 오늘 기록이 있으면 1분 추가
+        existingLog.minutes += 1;
+      } else {
+        // 오늘 첫 기록이면 새로 생성
+        project.timeLogs.push({
+          date: today,
+          minutes: 1,
+          projectId: id,
+        });
+      }
+
+      // 전체 시간도 업데이트 (초 단위)
+      project.totalTime += 60;
+
+      const updatedProjects = state.projects.map((p) =>
+        p.id === id ? { ...project } : p
+      );
+
+      // localStorage 업데이트
+      localStorage.setItem("projects", JSON.stringify(updatedProjects));
+
+      return { projects: updatedProjects };
     }),
 
   getProjectById: (id) => get().projects.find((p) => p.id === id),
