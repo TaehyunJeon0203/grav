@@ -1,11 +1,14 @@
 import { create } from "zustand";
 import { Project } from "../types/project";
+import { v4 as uuidv4 } from "uuid";
 
 interface ProjectStore {
   projects: Project[];
   addProject: (project: Project) => void;
   removeProject: (id: string) => void;
   updateProject: (id: string, updates: Partial<Project>) => void;
+  getProjectById: (id: string) => Project | undefined;
+  getTotalTime: () => number;
 }
 
 const loadProjects = (): Project[] => {
@@ -25,6 +28,8 @@ const loadProjects = (): Project[] => {
     totalTime: 0,
     isFavorite: false,
     timeLogs: [],
+    createdAt: new Date(),
+    updatedAt: new Date(),
   };
 
   const today = new Date();
@@ -36,6 +41,7 @@ const loadProjects = (): Project[] => {
   testProject.timeLogs.push({
     date: specialDate.toISOString().split("T")[0],
     minutes: 204, // 3.4시간
+    projectId: testProject.id,
   });
   testProject.totalTime += 204 * 60;
 
@@ -52,6 +58,7 @@ const loadProjects = (): Project[] => {
     testProject.timeLogs.push({
       date: date.toISOString().split("T")[0],
       minutes: 120, // 2시간
+      projectId: testProject.id,
     });
     testProject.totalTime += 120 * 60;
   }
@@ -65,6 +72,7 @@ const loadProjects = (): Project[] => {
     testProject.timeLogs.push({
       date: date.toISOString().split("T")[0],
       minutes: 480, // 8시간
+      projectId: testProject.id,
     });
     testProject.totalTime += 480 * 60;
   });
@@ -74,29 +82,34 @@ const loadProjects = (): Project[] => {
   return projects;
 };
 
-export const useProjectStore = create<ProjectStore>((set) => ({
+export const useProjectStore = create<ProjectStore>((set, get) => ({
   projects: loadProjects(),
 
   addProject: (project) =>
     set((state) => {
-      const newProjects = [...state.projects, project];
-      localStorage.setItem("projects", JSON.stringify(newProjects));
-      return { projects: newProjects };
+      const projects = [...state.projects, project];
+      localStorage.setItem("projects", JSON.stringify(projects));
+      return { projects };
     }),
 
   removeProject: (id) =>
     set((state) => {
-      const newProjects = state.projects.filter((p) => p.id !== id);
-      localStorage.setItem("projects", JSON.stringify(newProjects));
-      return { projects: newProjects };
+      const projects = state.projects.filter((p) => p.id !== id);
+      localStorage.setItem("projects", JSON.stringify(projects));
+      return { projects };
     }),
 
   updateProject: (id, updates) =>
     set((state) => {
-      const newProjects = state.projects.map((p) =>
+      const projects = state.projects.map((p) =>
         p.id === id ? { ...p, ...updates } : p
       );
-      localStorage.setItem("projects", JSON.stringify(newProjects));
-      return { projects: newProjects };
+      localStorage.setItem("projects", JSON.stringify(projects));
+      return { projects };
     }),
+
+  getProjectById: (id) => get().projects.find((p) => p.id === id),
+
+  getTotalTime: () =>
+    get().projects.reduce((sum, p) => sum + p.totalTime / 60, 0),
 }));

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Project } from "../../types/project";
-import { formatMinutes } from "../../utils/format";
+import { formatMinutes, getRecentTimeTotal } from "../../utils/dateTime";
 import { openInIde } from "../../utils/project";
 import { EditProjectModal } from "../Modal/EditProjectModal";
 import {
@@ -10,7 +10,6 @@ import {
 } from "@heroicons/react/24/outline";
 import { StarIcon as StarSolid } from "@heroicons/react/24/solid";
 import { useProjectStore } from "../../stores/projectStore";
-import { getRecentTimeTotal } from "../../utils/time";
 
 interface ProjectCardProps {
   project: Project;

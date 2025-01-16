@@ -1,13 +1,9 @@
 import { useProjectStore } from "../stores/projectStore";
-import { formatMinutes } from "../utils/format";
+import { formatMinutes } from "../utils/dateTime";
 import { GlobalHeatmap } from "./Heatmap/GlobalHeatmap";
 
 export const TotalTime = () => {
-  const { projects } = useProjectStore();
-  const totalMinutes = projects.reduce(
-    (sum, project) => sum + project.totalTime / 60,
-    0
-  );
+  const totalMinutes = useProjectStore((state) => state.getTotalTime());
 
   return (
     <div className="bg-neutral-800 rounded-lg p-6">

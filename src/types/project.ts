@@ -1,6 +1,8 @@
 export interface TimeLog {
-  date: string; // ISO 문자열 형식 (YYYY-MM-DD)
+  date: string;
   minutes: number;
+  projectId: string;
+  description?: string;
 }
 
 export interface Project {
@@ -10,4 +12,6 @@ export interface Project {
   totalTime: number;
   isFavorite: boolean;
   timeLogs: TimeLog[];
+  createdAt: Date;
+  updatedAt: Date;
 }

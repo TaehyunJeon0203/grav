@@ -1,7 +1,10 @@
 import { useMemo, useState } from "react";
 import { useProjectStore } from "../../stores/projectStore";
-import { getDatesInRange, getColorIntensity } from "../../utils/date";
-import { formatMinutes } from "../../utils/format";
+import {
+  getDatesInRange,
+  getColorIntensity,
+  formatMinutes,
+} from "../../utils/dateTime";
 
 export const GlobalHeatmap = () => {
   const projects = useProjectStore((state) => state.projects);
