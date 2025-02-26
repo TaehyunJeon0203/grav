@@ -22,9 +22,7 @@ export const GlobalHeatmap = () => {
 
     const dates = getDatesInRange(start, end);
     const dailyMinutes: Record<string, number> = {};
-    const weeks: string[][] = Array(53)
-      .fill(0)
-      .map(() => []);
+    const weeks: string[][] = []; // 빈 배열로 시작
     const months: { name: string; index: number }[] = [];
 
     // 초기화
@@ -34,9 +32,10 @@ export const GlobalHeatmap = () => {
 
     // 각 프로젝트의 작업 시간을 합산
     projects.forEach((project) => {
-      project.timeLogs?.forEach((log) => {
+      if (!project.timeLogs) return;
+      project.timeLogs.forEach((log) => {
         if (dailyMinutes.hasOwnProperty(log.date)) {
-          dailyMinutes[log.date] += log.minutes; // minutes 그대로 사용
+          dailyMinutes[log.date] += log.minutes;
         }
       });
     });
@@ -44,6 +43,8 @@ export const GlobalHeatmap = () => {
     // 주별로 데이터 정리 (과거 -> 최근 순서로)
     let currentMonth = -1;
     let weekIndex = 0;
+    let currentWeek: string[] = [];
+    weeks.push(currentWeek); // 첫 주 추가
 
     dates.forEach((date) => {
       const dayObj = new Date(date);
@@ -60,11 +61,13 @@ export const GlobalHeatmap = () => {
       }
 
       // 일요일이고 이미 데이터가 있으면 다음 주로
-      if (dayOfWeek === 0 && weeks[weekIndex].length > 0) {
+      if (dayOfWeek === 0 && currentWeek.length > 0) {
         weekIndex++;
+        currentWeek = [];
+        weeks.push(currentWeek);
       }
 
-      weeks[weekIndex].push(date);
+      currentWeek.push(date);
     });
 
     return {
