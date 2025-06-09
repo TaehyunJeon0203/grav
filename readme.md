@@ -19,7 +19,3 @@ Grav에 프로젝트를 단 한 번 추가한다면 언제든 손쉽게 열 수 
 ![preview](https://github.com/user-attachments/assets/3e0304c7-0040-4770-811b-6d1122744d4c)
 추가한 프로젝트는 이렇게 나타나요.  
 프로젝트 하단 시작 아이콘을 누르면 VSCode 에서 해당 프로젝트가 열려요.
-
----
-
-[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FTaehyunJeon0203%2Fgrav&count_bg=%23ABA4F4&title_bg=%234C60F7&icon=&icon_color=%239BA9F0&title=Visit&edge_flat=false)](https://hits.seeyoufarm.com)
