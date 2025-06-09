@@ -1,11 +1,11 @@
-![header](https://capsule-render.vercel.app/api?type=rect&color=gradient&height=100&section=header&text=Grav&fontSize=45&fontAlign=80&fontAlignY=52)
+![header](https://capsule-render.vercel.app/api?type=rect&color=gradient&height=100&section=header&text=Grav&fontSize=45&fontAlign=80&fontAlignY=52)   
 ![ELECTRON](https://img.shields.io/badge/Electron-47848F?style=flat-square&logo=Electron&logoColor=white)
 ![Typescript](https://img.shields.io/badge/Typescript-3178c6?style=flat-square&logo=typescript&logoColor=white)
 ![Tailwind](https://img.shields.io/badge/Tailwind-06B6D4?style=flat-square&logo=sass&logoColor=white)
 
 ## 개요
 
-> 매번 에디터를 킨 후 복잡한 경로에 찾아가서 프로젝트를 열었나요?
+> 매번 에디터를 킨 후 복잡한 경로에 찾아가서 프로젝트를 열었나요?   
 > 혹은 터미널에서 복잡한 경로를 찾아간 후 에디터를 열었나요?
 
 Grav에 프로젝트를 단 한 번 추가한다면 언제든 손쉽게 열 수 있어요   
